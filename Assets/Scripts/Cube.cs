@@ -2,35 +2,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[RequireComponent(typeof(CubesSpawner))]
+[RequireComponent(typeof(Exploder))]
 public class Cube : MonoBehaviour
 {
     [SerializeField] private float _divisionChance;
-    [SerializeField] private float _explosionForce;
-    [SerializeField] private float _explosionRadius;
-
-    private CubesSpawner _spawner;
+    [SerializeField] private CubesSpawner _spawner;
+    
+    private Exploder _exploder;
     
     public float DivisionChance => _divisionChance;
-    
-    public void Init(Vector3 size, float divisionChance)
+
+    public void Init(Vector3 size, float divisionChance, CubesSpawner spawner)
     {
         transform.localScale = size;
         _divisionChance = divisionChance;
+        _spawner = spawner;
     }
-
+    
     private void Awake()
     {
-        _spawner = GetComponent<CubesSpawner>();
+        _exploder = GetComponent<Exploder>();
     }
 
     private void OnMouseUpAsButton()
     {
         if (WillDivide())
         {
-            List<Cube> cubes = _spawner.CreateCubes();
+            List<Cube> cubes = _spawner.CreateCubes(this);
             
-            Explode(cubes);
+            _exploder.Explode(cubes);
         }
         
         Destroy(gameObject);
@@ -39,14 +39,6 @@ public class Cube : MonoBehaviour
     private void OnValidate()
     {
         _divisionChance = Mathf.Clamp(_divisionChance, 0, 1);
-    }
-    
-    private void Explode(List<Cube> cubes)
-    {
-        foreach (Cube cube in cubes)
-        {
-            cube.GetComponent<Rigidbody>().AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
-        }
     }
     
     private bool WillDivide()

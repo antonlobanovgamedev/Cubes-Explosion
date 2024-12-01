@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class CubesSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject _cubePrefab;
-    [SerializeField] private float _newCubesSizeMultiplier;
-    [SerializeField] private float _divisionMultiplier;
+    [SerializeField] private Cube _cubePrefab;
+    [SerializeField] private float _sizeMultiplier;
+    [SerializeField] private float _divisionChanceMultiplier;
 
     [SerializeField] private int _minNewCubesCount;
     [SerializeField] private int _maxNewCubesCount;
@@ -19,7 +19,7 @@ public class CubesSpawner : MonoBehaviour
             _maxNewCubesCount = _minNewCubesCount;
     }
     
-    public List<Cube> CreateCubes()
+    public List<Cube> CreateCubes(Cube parentCube)
     {
         int count = GetNewCubesCount(_minNewCubesCount, _maxNewCubesCount);
         
@@ -27,8 +27,8 @@ public class CubesSpawner : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            Cube cube = Instantiate(_cubePrefab).GetComponent<Cube>();
-            cube.Init(GetNewCubeSize(_newCubesSizeMultiplier), GetNewCubeDivisionChance(_divisionMultiplier));
+            Cube cube = Instantiate(_cubePrefab, parentCube.transform.position, parentCube.transform.rotation);
+            cube.Init(GetNewSize(parentCube, _sizeMultiplier), GetNewDivisionChance(parentCube, _divisionChanceMultiplier), this);
             
             cubes.Add(cube);
         }
@@ -41,16 +41,15 @@ public class CubesSpawner : MonoBehaviour
         return Random.Range(minCount, maxCount);
     }
     
-    private float GetNewCubeDivisionChance(float multiplier)
+    private float GetNewDivisionChance(Cube parentCube, float multiplier)
     {
-        return GetComponent<Cube>().DivisionChance * multiplier;
+        return parentCube.DivisionChance * multiplier;
     }
     
-    private Vector3 GetNewCubeSize(float multiplier)
+    private Vector3 GetNewSize(Cube parentCube, float multiplier)
     {
-        Vector3 currentSize = transform.localScale;
-        Vector3 size = currentSize * multiplier;
+        Vector3 currentSize = parentCube.transform.localScale;
         
-        return size;
+        return currentSize * multiplier;
     }
 }
