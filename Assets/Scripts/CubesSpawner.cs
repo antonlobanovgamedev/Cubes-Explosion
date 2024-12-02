@@ -19,26 +19,20 @@ public class CubesSpawner : MonoBehaviour
             _maxNewCubesCount = _minNewCubesCount;
     }
     
-    public List<Cube> CreateCubes(Cube parentCube)
+    public void CreateCubes(Cube parentCube)
     {
         int count = GetNewCubesCount(_minNewCubesCount, _maxNewCubesCount);
-        
-        List<Cube> cubes = new List<Cube>(count);
 
         for (int i = 0; i < count; i++)
         {
             Cube cube = Instantiate(_cubePrefab, parentCube.transform.position, parentCube.transform.rotation);
             cube.Init(GetNewSize(parentCube, _sizeMultiplier), GetNewDivisionChance(parentCube, _divisionChanceMultiplier), this);
-            
-            cubes.Add(cube);
         }
-        
-        return cubes;
     }
     
     private int GetNewCubesCount(int minCount, int maxCount)
     {
-        return Random.Range(minCount, maxCount);
+        return Random.Range(minCount, maxCount + 1);
     }
     
     private float GetNewDivisionChance(Cube parentCube, float multiplier)

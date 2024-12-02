@@ -153,7 +153,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _divisionChance: 1
   _spawner: {fileID: 0}
-  _exploder: {fileID: 0}
 --- !u!114 &3558237714042497499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,6 +167,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _explosionForce: 800
   _explosionRadius: 10
+  _forceMultiplier: 2
+  _radiusMultiplier: 1.5
 --- !u!114 &7703428260232878385
 MonoBehaviour:
   m_ObjectHideFlags: 0

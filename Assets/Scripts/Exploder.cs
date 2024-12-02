@@ -1,17 +1,26 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class Exploder : MonoBehaviour
 {
     [SerializeField] private float _explosionForce;
     [SerializeField] private float _explosionRadius;
-    
-    public void Explode(List<Cube> cubes)
+    [SerializeField] private float _forceMultiplier;
+    [SerializeField] private float _radiusMultiplier;
+
+    public void Explode()
     {
-        foreach (Cube cube in cubes)
+        Collider[] colliders = Physics.OverlapSphere(transform.position, _explosionRadius);
+
+        foreach (Collider collider in colliders)
         {
-            if(cube.TryGetComponent(out Rigidbody rigidbody))
+            if(collider.TryGetComponent(out Rigidbody rigidbody))
                 rigidbody.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
         }
+    }
+
+    public void ChangeExplosionPowerWithMultiplier()
+    {
+        _explosionForce *= _forceMultiplier;
+        _explosionRadius *= _radiusMultiplier;
     }
 }

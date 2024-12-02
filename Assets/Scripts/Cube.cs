@@ -12,11 +12,9 @@ public class Cube : MonoBehaviour
     
     public float DivisionChance => _divisionChance;
 
-    public void Init(Vector3 size, float divisionChance, CubesSpawner spawner)
+    private void OnValidate()
     {
-        transform.localScale = size;
-        _divisionChance = divisionChance;
-        _spawner = spawner;
+        _divisionChance = Mathf.Clamp(_divisionChance, 0, 1);
     }
     
     private void Awake()
@@ -26,22 +24,24 @@ public class Cube : MonoBehaviour
 
     private void OnMouseUpAsButton()
     {
-        if (WillDivide())
-        {
-            List<Cube> cubes = _spawner.CreateCubes(this);
-            
-            _exploder.Explode(cubes);
-        }
+        if (CanDivide())
+            _spawner.CreateCubes(this);
+        else
+            _exploder.Explode();
         
         Destroy(gameObject);
     }
     
-    private void OnValidate()
+    public void Init(Vector3 size, float divisionChance, CubesSpawner spawner)
     {
-        _divisionChance = Mathf.Clamp(_divisionChance, 0, 1);
+        transform.localScale = size;
+        _divisionChance = divisionChance;
+        _spawner = spawner;
+        
+        _exploder.ChangeExplosionPowerWithMultiplier();
     }
     
-    private bool WillDivide()
+    private bool CanDivide()
     {
         return _divisionChance >= Random.Range(0f, 1f);
     }
